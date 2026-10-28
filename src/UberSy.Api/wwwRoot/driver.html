@@ -1,0 +1,623 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚗 Driver Dashboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .header h1 {
+                color: #c2185b;
+                font-size: 24px;
+            }
+
+        .status {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+            .status.connected {
+                background: #d4edda;
+                color: #155724;
+            }
+
+            .status.disconnected {
+                background: #f8d7da;
+                color: #721c24;
+            }
+
+            .status.connecting {
+                background: #fff3cd;
+                color: #856404;
+            }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+            .card h2 {
+                color: #c2185b;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #eee;
+                font-size: 18px;
+            }
+
+        .location-panel {
+            text-align: center;
+        }
+
+        .coords {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Consolas', monospace;
+        }
+
+            .coords .label {
+                color: #666;
+                font-size: 13px;
+            }
+
+            .coords .value {
+                color: #c2185b;
+                font-size: 18px;
+                font-weight: bold;
+            }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .btn-toggle {
+            background: #28a745;
+            color: white;
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+            .btn-toggle.off {
+                background: #dc3545;
+            }
+
+            .btn-toggle:hover {
+                transform: scale(1.02);
+            }
+
+        .offers-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .offer-card {
+            background: linear-gradient(135deg, #fff5f7 0%, #ffe0e6 100%);
+            border-right: 5px solid #c2185b;
+            padding: 20px;
+            border-radius: 8px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+            .offer-card.new {
+                border-right-color: #28a745;
+                animation: pulse 1s infinite;
+            }
+
+        .offer-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .offer-id {
+            font-family: monospace;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .offer-body {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .offer-amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .offer-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-accept {
+            background: #28a745;
+            color: white;
+            flex: 1;
+        }
+
+            .btn-accept:hover {
+                background: #218838;
+            }
+
+        .btn-reject {
+            background: #dc3545;
+            color: white;
+            flex: 1;
+        }
+
+            .btn-reject:hover {
+                background: #c82333;
+            }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+            .status-indicator.online {
+                background: #d4edda;
+                color: #155724;
+            }
+
+            .status-indicator.offline {
+                background: #f8d7da;
+                color: #721c24;
+            }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 15px rgba(40, 167, 69, 0);
+            }
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #28a745;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 9999;
+            animation: slideDown 0.3s;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚗 Driver Dashboard</h1>
+            <div id="status" class="status disconnected">غير متصل</div>
+        </div>
+
+        <div class="grid">
+            <div class="card location-panel">
+                <h2>📍 موقعي الحالي</h2>
+                <div id="locationStatus" class="status-indicator offline">
+                    <span class="dot"></span>
+                    <span id="locationStatusText">متوقف</span>
+                </div>
+                <div class="coords">
+                    <div class="label">Latitude</div>
+                    <div class="value" id="lat">—</div>
+                </div>
+                <div class="coords">
+                    <div class="label">Longitude</div>
+                    <div class="value" id="lng">—</div>
+                </div>
+                <button id="btnToggleLocation" class="btn btn-toggle">
+                    ▶️ بدء إرسال الموقع
+                </button>
+                <p style="margin-top: 15px; font-size: 13px; color: #666;">
+                    ⏱️ يتم إرسال الموقع كل <strong>30 ثانية</strong>
+                </p>
+            </div>
+
+            <div class="card">
+                <h2>📨 العروض الجديدة</h2>
+                <div id="offersList" class="offers-list">
+                    <div class="empty-state">
+                        ⏳ في انتظار العروض...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+
+    <script>
+                // ============================================================
+                // 1. الإعدادات
+                // ============================================================
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxNmFlMWI3OS0yYWQ0LTRmZjUtOWY0Yy03ZGJmY2RmZWRlOGEiLCJlbWFpbCI6ImRyaXZlci5sYWJvckBsb2NhbGhvc3QiLCJyb2xlIjoiVXNlciIsIm5iZiI6MTc5MjE0NzkzMSwiZXhwIjoxNzkyMTUxNTMxLCJpYXQiOjE3OTIxNDc5MzEsImlzcyI6ImxvY2FsaG9zdCIsImF1ZCI6ImxvY2FsaG9zdCJ9.IMoKk4_oC5wLH81sPzh1yNK9q75-EVXOeZRWKMJqLQo';
+const driverId = 'DF8C511E-C0A4-424F-BBD5-8A200A904F4E';
+                const hubUrl = 'https://localhost:7037/hubs/driver';
+
+                const LOCATION_INTERVAL_MS = 30_000;
+
+                let locationInterval = null;
+                let currentLat = null;
+                let currentLng = null;
+
+                const $ = (id) => document.getElementById(id);
+
+                // ============================================================
+                // 2. الصوت
+                // ============================================================
+                function playNotificationSound() {
+                    try {
+                        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                        [900, 1300, 1700].forEach((freq, i) => {
+                            setTimeout(() => {
+                                const osc = ctx.createOscillator();
+                                const gain = ctx.createGain();
+                                osc.connect(gain);
+                                gain.connect(ctx.destination);
+                                osc.frequency.value = freq;
+                                osc.type = 'sine';
+                                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+                                osc.start(ctx.currentTime);
+                                osc.stop(ctx.currentTime + 0.4);
+                            }, i * 250);
+                        });
+                    } catch (err) {
+                        console.error("Sound Error:", err);
+                    }
+                }
+
+                // ============================================================
+                // 3. Toast
+                // ============================================================
+                function showToast(message, type = 'success') {
+                    const toast = document.createElement('div');
+                    toast.className = 'toast';
+                    toast.textContent = message;
+                    if (type === 'error') toast.style.background = '#dc3545';
+                    document.body.appendChild(toast);
+                    setTimeout(() => toast.remove(), 3000);
+                }
+
+                // ============================================================
+                // 4. الحالة
+                // ============================================================
+                function setStatus(status, text) {
+                    const el = $('status');
+                    el.className = `status ${status}`;
+                    el.textContent = text;
+                }
+
+                // ============================================================
+                // 5. عرض العرض
+                // ============================================================
+                function renderOffer(offer) {
+                    const offerId = offer.offerId || offer.OfferId;
+                    const existing = document.querySelector(`[data-offer-id="${offerId}"]`);
+                    if (existing) existing.remove();
+
+                    const totalAmount = offer.totalAmount || 0;
+                    const deadline = offer.offerExpiresAtUtc
+                        ? new Date(offer.offerExpiresAtUtc).toLocaleString('ar-SY')
+                        : 'غير محدد';
+
+                    const card = document.createElement('div');
+                    card.className = 'offer-card new';
+                    card.dataset.offerId = offerId;
+                    card.innerHTML = `
+                        <div class="offer-header">
+                            <span>🆔 <span class="offer-id">${offerId}</span></span>
+                            <span>⏰ ${new Date().toLocaleTimeString('ar-SY')}</span>
+                        </div>
+                        <div class="offer-body">
+                            <div>
+                                <div>⏳ ينتهي: <strong>${deadline}</strong></div>
+                            </div>
+                            <div class="offer-amount">${totalAmount.toFixed(0)} ل.س</div>
+                        </div>
+                        <div class="offer-actions">
+                            <button class="btn btn-accept" onclick="acceptOffer('${offerId}')">✅ قبول</button>
+                            <button class="btn btn-reject" onclick="rejectOffer('${offerId}')">❌ رفض</button>
+                        </div>
+                    `;
+
+                    $('offersList').prepend(card);
+                    setTimeout(() => card.classList.remove('new'), 5000);
+                }
+
+                // ============================================================
+                // 6. قبول / رفض
+                // ============================================================
+                async function acceptOffer(offerId) {
+                    try {
+                        await connection.invoke("AcceptOffer", offerId);
+                        showToast(`✅ تم قبول العرض`);
+                        removeOffer(offerId);
+                    } catch (err) {
+                        console.error("Accept Error:", err);
+                        showToast(`❌ فشل القبول: ${err.message}`, 'error');
+                    }
+                }
+
+                async function rejectOffer(offerId) {
+                    try {
+                        await connection.invoke("RejectOffer", offerId);
+                        showToast(`❌ تم رفض العرض`);
+                        removeOffer(offerId);
+                    } catch (err) {
+                        console.error("Reject Error:", err);
+                    }
+                }
+
+                function removeOffer(offerId) {
+                    const card = document.querySelector(`[data-offer-id="${offerId}"]`);
+                    if (card) card.remove();
+                }
+
+                // ============================================================
+                // 7. الاتصال
+                // ============================================================
+                const connection = new signalR.HubConnectionBuilder()
+                    .withUrl(hubUrl, {
+                        accessTokenFactory: () => token
+                    })
+                    .withAutomaticReconnect()
+                    .configureLogging(signalR.LogLevel.Information)
+                    .build();
+
+                // ============================================================
+                // 8. الأحداث
+                // ============================================================
+                connection.on("NewOfferReceived", (offer) => {
+                    console.log("🔔 NewOfferReceived:", offer);
+                    playNotificationSound();
+                    showToast(`🔔 عرض جديد`);
+                    renderOffer(offer);
+                    const empty = document.querySelector('#offersList .empty-state');
+                    if (empty) empty.remove();
+                });
+
+                connection.on("OfferLostToAnotherDriver", (offer) => {
+                    console.log("❌ OfferLostToAnotherDriver:", offer);
+                    showToast(`❌ تم أخذ العرض من سائق آخر`, 'error');
+                    removeOffer(offer.offerId);
+                });
+
+                connection.on("LocationUpdateFailed", (err) => {
+                    console.error("❌ LocationUpdateFailed:", err);
+                    showToast(`❌ فشل إرسال الموقع: ${err.code}`, 'error');
+                });
+
+                connection.on("LocationUpdated", (data) => {
+                    console.log("✅ LocationUpdated:", data);
+                });
+
+                connection.onreconnecting(() => {
+                    setStatus('connecting', 'جاري إعادة الاتصال...');
+                });
+
+                connection.onreconnected((connectionId) => {
+                    setStatus('connected', 'متصل');
+                    console.log("✅ Reconnected:", connectionId);
+                });
+
+                connection.onclose(() => {
+                    setStatus('disconnected', 'غير متصل');
+                    stopLocationTracking();
+                });
+
+                // ============================================================
+                // 9. إرسال الموقع
+                // ============================================================
+                async function sendLocation() {
+                    const baseLat = 33.5138;
+                    const baseLng = 36.2765;
+                    const offset = (Math.random() - 0.5) * 0.01;
+
+                    currentLat = baseLat + offset;
+                    currentLng = baseLng + offset;
+
+                    $('lat').textContent = currentLat.toFixed(6);
+                    $('lng').textContent = currentLng.toFixed(6);
+
+                    try {
+                        await connection.invoke("UpdateLocation", driverId, currentLat, currentLng);
+                        console.log(`📍 Location Sent: ${currentLat.toFixed(6)}, ${currentLng.toFixed(6)}`);
+                    } catch (err) {
+                        console.error("❌ Failed To Send Location:", err);
+                    }
+                }
+
+                function startLocationTracking() {
+                    if (locationInterval) return;
+                    console.log("🚀 Starting Location Tracking (every 30s)");
+                    sendLocation();
+                    locationInterval = setInterval(sendLocation, LOCATION_INTERVAL_MS);
+                    $('locationStatus').className = 'status-indicator online';
+                    $('locationStatusText').textContent = 'يرسل الموقع';
+                    $('btnToggleLocation').textContent = '⏸️ إيقاف إرسال الموقع';
+                    $('btnToggleLocation').classList.add('off');
+                    showToast('✅ بدأ إرسال الموقع');
+                }
+
+                function stopLocationTracking() {
+                    if (locationInterval) {
+                        clearInterval(locationInterval);
+                        locationInterval = null;
+                    }
+                    $('locationStatus').className = 'status-indicator offline';
+                    $('locationStatusText').textContent = 'متوقف';
+                    $('btnToggleLocation').textContent = '▶️ بدء إرسال الموقع';
+                    $('btnToggleLocation').classList.remove('off');
+                    showToast('⏸️ تم إيقاف إرسال الموقع');
+                }
+
+                // ============================================================
+                // 10. زر التبديل
+                // ============================================================
+                $('btnToggleLocation').addEventListener('click', () => {
+                    if (locationInterval) {
+                        stopLocationTracking();
+                    } else {
+                        startLocationTracking();
+                    }
+                });
+
+                // ============================================================
+                // 11. بدء الاتصال
+                // ============================================================
+                (async () => {
+                    try {
+                        console.log("⏳ Connecting to", hubUrl);
+                        setStatus('connecting', 'جاري الاتصال...');
+
+                        await connection.start();
+                        console.log("✅ Connected:", connection.connectionId);
+                        setStatus('connected', 'متصل');
+
+                        await connection.invoke("JoinDriverGroup", driverId);
+                        console.log(`✅ Joined Group: driver-${driverId}`);
+
+                        showToast(`✅ متصل`);
+                    } catch (err) {
+                        console.error("❌ Connection Error:", err);
+                        setStatus('disconnected', 'فشل الاتصال');
+                        showToast(`❌ فشل الاتصال: ${err.message}`, 'error');
+                    }
+                })();
+
+                // ============================================================
+                // 12. Expose للاستخدام في Console
+                // ============================================================
+                window.driverDashboard = {
+                    connection,
+                    startLocationTracking,
+                    stopLocationTracking,
+                    sendLocation
+                };
+
+                console.log("💡 window.driverDashboard متاح");
+    </script>
+</body>
+</html>

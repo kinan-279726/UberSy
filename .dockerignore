@@ -1,0 +1,25 @@
+# ملفات البناء
+**/bin/
+**/obj/
+**/out/
+**/publish/
+
+# إعدادات Visual Studio
+**/.vs/
+**/.vscode/
+**/.idea/
+.env
+**/.env
+
+# إعدادات Git
+**/.git/
+**/.gitignore
+
+# ملفات النظام
+**/Thumbs.db
+**/.DS_Store
+
+# ملفات قاعدة البيانات المحلية
+*.mdf
+*.ldf
+*.ndb

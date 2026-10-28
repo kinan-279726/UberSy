@@ -1,0 +1,116 @@
+@baseUrl = https://localhost:7037
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTUzOTkxYy04ZmM2LTQyYjYtYjQzOC03MDdiYzI2NzIzMmIiLCJlbWFpbCI6ImpvaG4ubGFib3JAbG9jYWxob3N0Iiwicm9sZSI6IlVzZXIiLCJuYmYiOjE3OTA4NTUzNDksImV4cCI6MTc5MDg1NjI0OSwiaWF0IjoxNzkwODU1MzQ5LCJpc3MiOiJsb2NhbGhvc3QiLCJhdWQiOiJsb2NhbGhvc3QifQ.-YjybiexW4g1Ke0JrzGSFDGfFAnInX7zE1FXnepnrMA
+
+
+### ================================================================
+### المتغيرات
+### ================================================================
+@addressId = a1c12c3c-2433-493d-9fdb-19b17640f297
+@userId = B53DFBC7-366E-45B6-AA05-D313C3D5B0F5
+
+### ================================================================
+### 1. Get Address By Id
+### ================================================================
+GET {{baseUrl}}/api/address/{{addressId}}
+Authorization: Bearer {{token}}
+
+### ================================================================
+### 2. Get Addresses By User
+### ================================================================
+GET {{baseUrl}}/api/address/{{userId}}/user
+Authorization: Bearer {{token}}
+
+### ================================================================
+### 3. Create Address
+### ================================================================
+POST {{baseUrl}}/api/address
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "userId": "{{userId}}",
+  "street": "شارع المزة",
+  "city": "دمشق",
+  "boundary": {
+    "latitude": 33.5138,
+    "longitude": 36.2765
+  },
+  "label": "Home",
+  "floor": "3",
+  "phone": "+963911111111",
+  "isDefault": true
+}
+
+### ================================================================
+### 4. Mark Address As Default
+### ================================================================
+PATCH {{baseUrl}}/api/address/{{addressId}}/markAsDefault
+Authorization: Bearer {{token}}
+
+### ================================================================
+### 5. Update Address
+### ================================================================
+PATCH {{baseUrl}}/api/address
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "addressId": "{{addressId}}",
+  "street": "شارع اختبار",
+  "city": "دمشق",
+  "latitude": 33.5238,
+  "longitude": 36.2865,
+  "label": "Work",
+  "floor": "2",
+  "phone": "+963922222222"
+}
+
+### ================================================================
+### 6. Delete Address
+### ================================================================
+DELETE {{baseUrl}}/api/address/{{addressId}}
+Authorization: Bearer {{token}}
+
+### ================================================================
+### 7. اختبارات الأخطاء
+### ================================================================
+
+### 7.1 Get Address With Invalid Guid → 400
+GET {{baseUrl}}/api/address/not-a-guid
+Authorization: Bearer {{token}}
+
+### 7.2 Get Address With Random Guid → 404
+GET {{baseUrl}}/api/address/99999999-9999-9999-9999-999999999999
+Authorization: Bearer {{token}}
+
+### 7.3 Create Address With Missing Street → 400
+POST {{baseUrl}}/api/address
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "userId": "{{userId}}",
+  "city": "دمشق",
+  "boundary": {
+    "latitude": 33.5138,
+    "longitude": 36.2765
+  }
+}
+
+### 7.4 Create Address With Invalid Boundary → 400
+POST {{baseUrl}}/api/address
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "userId": "{{userId}}",
+  "street": "شارع المزة",
+  "city": "دمشق",
+  "boundary": {
+    "latitude": 1000,
+    "longitude": 36.2765
+  }
+}
+
+### 7.5 Without Token → 401
+GET {{baseUrl}}/api/address/{{addressId}}

@@ -1,0 +1,399 @@
+@baseUrl = https://localhost:7037
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTUzOTkxYy04ZmM2LTQyYjYtYjQzOC03MDdiYzI2NzIzMmIiLCJlbWFpbCI6ImpvaG4ubGFib3JAbG9jYWxob3N0Iiwicm9sZSI6IlVzZXIiLCJuYmYiOjE3OTA3ODQzNzUsImV4cCI6MTc5MDc4NTI3NSwiaWF0IjoxNzkwNzg0Mzc1LCJpc3MiOiJsb2NhbGhvc3QiLCJhdWQiOiJsb2NhbGhvc3QifQ.wAtWAe5W7bP0Hf-J7CB2Ht5A-TSPy1cb-Sn0STJPhCY
+
+
+
+### ================================================================
+### المتغيرات — عدّلها حسب قيمك
+### ================================================================
+@restaurantId = 9CA2C48F-CA9B-4194-8B36-1932C052A084
+@ownerId = 1153991C-8FC6-42B6-B438-707BC267232B
+@userId = B53DFBC7-366E-45B6-AA05-D313C3D5B0F5
+@categoryId = 959D8B33-F216-4BAE-A430-3C9C364336F2
+@itemId = 43B2B6E1-92A7-4594-B3E5-08D2A5E35CDB
+@addOnId = 93BAF306-FE7B-4A0D-B4C4-02E1B2938AB6
+
+### ================================================================
+### 1. Restaurant — GET
+### ================================================================
+
+### 1.1 Get Restaurant By Id
+GET {{baseUrl}}/api/restaurant/{{restaurantId}}
+# Authorization: Bearer {{token}}
+
+### 1.2 Get Restaurants By Owner
+GET {{baseUrl}}/api/restaurant/user/{{userId}}
+# Authorization: Bearer {{token}}
+
+### 1.3 Get Categories By Restaurant
+GET {{baseUrl}}/api/restaurant/{{restaurantId}}/category
+# Authorization: Bearer {{token}}
+
+### 1.4 Get Items By Restaurant
+GET {{baseUrl}}/api/restaurant/{{restaurantId}}/item
+# Authorization: Bearer {{token}}
+
+### 1.5 Get AddOns By Restaurant
+GET {{baseUrl}}/api/restaurant/{{restaurantId}}/addOn
+# Authorization: Bearer {{token}}
+
+### 1.6 Search Nearby Restaurants
+POST {{baseUrl}}/api/restaurant/nearby
+Content-Type: application/json
+# Authorization: Bearer {{token}}
+
+{
+  "latitude": 33.5138,
+  "longitude": 36.2765,
+  "radiusKm": 50
+}
+
+### ================================================================
+### 2. Restaurant — PATCH
+### ================================================================
+
+### 2.1 Approve Restaurant
+PATCH {{baseUrl}}/api/restaurant/{{restaurantId}}/approve
+Authorization: Bearer {{token}}
+
+### 2.2 Close Restaurant
+PATCH {{baseUrl}}/api/restaurant/{{restaurantId}}/close
+Authorization: Bearer {{token}}
+
+### 2.3 Open Restaurant
+PATCH {{baseUrl}}/api/restaurant/{{restaurantId}}/open
+Authorization: Bearer {{token}}
+
+### 2.4 Reject Restaurant
+PATCH {{baseUrl}}/api/restaurant/{{restaurantId}}/reject
+Authorization: Bearer {{token}}
+
+### 2.5 Update Commission Rate
+PATCH {{baseUrl}}/api/restaurant/commissionReate
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "restaurantId": "{{restaurantId}}",
+  "commissionRate": 15.0
+}
+
+### 2.6 Update Operating Hours
+PATCH {{baseUrl}}/api/restaurant/operatingHours
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "restaurantId": "{{restaurantId}}",
+  "openingTime": "08:00",
+  "closingTime": "23:00"
+}
+
+### 2.7 Update Order Limits
+PATCH {{baseUrl}}/api/restaurant/orderLimits
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "restaurantId": "{{restaurantId}}",
+  "minOrderAmount": 20.0,
+  "maxOrderAmount": 600.0
+}
+
+### 2.8 Update Restaurant Images
+PATCH {{baseUrl}}/api/restaurant/images
+Content-Type: application/json
+# Authorization: Bearer {{token}}
+
+{
+  "restaurantId": "{{restaurantId}}",
+  "logoUrl": "https://example.com/logo.jpg",
+  "coverUrl": "https://example.com/cover.jpg"
+}
+
+### 2.9 Update Restaurant Location
+PATCH {{baseUrl}}/api/restaurant/location
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "restaurantId": "{{restaurantId}}",
+  "latitude": 33.5138,
+  "longitude": 36.2765
+}
+
+### 2.10 Update Restaurant Profile
+PATCH {{baseUrl}}/api/restaurant/profile
+Content-Type: application/json
+# Authorization: Bearer {{token}}
+
+{
+  "restaurantId": "{{restaurantId}}",
+  "nameAr": "الاسم الجديد",
+  "nameEn": "New Name",
+  "descriptionAr": "وصف جديد",
+  "descriptionEn": "New Description",
+  "phone": "+963911111111",
+  "email": "new@example.com"
+}
+
+### 2.11 Update Tax Rate
+PATCH {{baseUrl}}/api/restaurant/taxRate
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "restaurantId": "{{restaurantId}}",
+  "taxRate": 5.0
+}
+
+### ================================================================
+### 3. Restaurant — POST
+### ================================================================
+
+### 3.1 Create Restaurant
+POST {{baseUrl}}/api/restaurant
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nameAr": "مطعم جديد",
+  "nameEn": "New Restaurant",
+  "descriptionAr": "وصف",
+  "descriptionEn": "Description",
+  "phone": "+963911111111",
+  "email": "new@example.com",
+  "commissionRate": 10.0,
+  "taxRate": 5.0,
+  "openingTime": "09:00",
+  "closingTime": "23:00",
+  "minOrderAmount": 20.0,
+  "maxOrderAmount": 500.0,
+  "latitude": 33.5138,
+  "longitude": 36.2765
+}
+
+### ================================================================
+### 4. Category — GET
+### ================================================================
+
+### 4.1 Get Category By Id
+GET {{baseUrl}}/api/category/{{categoryId}}
+Authorization: Bearer {{token}}
+
+### 4.2 Get Items By Category
+GET {{baseUrl}}/api/category/{{categoryId}}/items
+Authorization: Bearer {{token}}
+
+### ================================================================
+### 5. Category — PATCH
+### ================================================================
+
+### 5.1 Activate Category
+PATCH {{baseUrl}}/api/category/activat
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+"{{categoryId}}"
+
+### 5.2 Deactivate Category
+PATCH {{baseUrl}}/api/category/deactivat
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+"{{categoryId}}"
+
+### 5.3 Update Category Profile
+PATCH {{baseUrl}}/api/category/profile
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "categoryId": "{{categoryId}}",
+  "nameAr": "الاسم الجديد",
+  "nameEn": "New Name"
+}
+
+### 5.4 Update Category Sort Order
+PATCH {{baseUrl}}/api/category/sortorder
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "categoryId": "{{categoryId}}",
+  "sortOrder": 5
+}
+
+### ================================================================
+### 6. Category — POST
+### ================================================================
+
+### 6.1 Create Category
+POST {{baseUrl}}/api/category
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "restaurantId": "{{restaurantId}}",
+  "nameAr": "فئة جديدة",
+  "nameEn": "New Category",
+  "sortOrder": 1
+}
+
+### ================================================================
+### 7. Item — GET
+### ================================================================
+
+### 7.1 Get Item By Id
+GET {{baseUrl}}/api/item/{{itemId}}
+Authorization: Bearer {{token}}
+
+### ================================================================
+### 8. Item — PATCH
+### ================================================================
+
+### 8.1 Activate Item
+PATCH {{baseUrl}}/api/item/activate
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+"{{itemId}}"
+
+### 8.2 Deactivate Item
+PATCH {{baseUrl}}/api/item/deactivate
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+"{{itemId}}"
+
+### 8.3 Assign AddOn To Item
+PATCH {{baseUrl}}/api/item/AssignAddOn
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "itemId": "{{itemId}}",
+  "addOnId": "{{addOnId}}"
+}
+
+### 8.4 Remove AddOn From Item
+PATCH {{baseUrl}}/api/item/removeAddOn
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "itemId": "{{itemId}}",
+  "addOnId": "{{addOnId}}"
+}
+
+### 8.5 Move Item To Category
+PATCH {{baseUrl}}/api/item/moveToCategory
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "itemId": "{{itemId}}",
+  "newCategoryId": "{{categoryId}}"
+}
+
+### 8.6 Update Item Price
+PATCH {{baseUrl}}/api/item/price
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "itemId": "{{itemId}}",
+  "newPrice": 45.0
+}
+
+### 8.7 Update Item Profile
+PATCH {{baseUrl}}/api/item/profile
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "itemId": "{{itemId}}",
+  "nameAr": "الاسم الجديد",
+  "nameEn": "New Name",
+  "descriptionAr": "وصف جديد",
+  "descriptionEn": "New Description",
+  "price": 50.0,
+  "imageUrl": "https://example.com/image.jpg",
+  "calories": 400
+}
+
+### ================================================================
+### 9. Item — POST
+### ================================================================
+
+### 9.1 Create Item
+POST {{baseUrl}}/api/item
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "restaurantId": "{{restaurantId}}",
+  "categoryId": "{{categoryId}}",
+  "nameAr": "صنف جديد",
+  "nameEn": "New Item",
+  "descriptionAr": "وصف",
+  "descriptionEn": "Description",
+  "price": 25.0,
+  "imageUrl": "https://example.com/item.jpg",
+  "calories": 300,
+  "sortOrder": 1
+}
+
+### ================================================================
+### 10. AddOn — GET
+### ================================================================
+
+### 10.1 Get AddOn By Id
+GET {{baseUrl}}/api/addOn/{{addOnId}}
+Authorization: Bearer {{token}}
+
+### ================================================================
+### 11. AddOn — PATCH
+### ================================================================
+
+### 11.1 Activate AddOn
+PATCH {{baseUrl}}/api/addOn/activate
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+"{{addOnId}}"
+
+### 11.2 Deactivate AddOn
+PATCH {{baseUrl}}/api/addOn/deactivate
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+"{{addOnId}}"
+
+### 11.3 Update AddOn Profile
+PATCH {{baseUrl}}/api/addOn/profile
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "addOnId": "{{addOnId}}",
+  "nameAr": "الاسم الجديد",
+  "nameEn": "New Name",
+  "price": 10.0
+}
+
+### ================================================================
+### 12. AddOn — POST
+### ================================================================
+
+### 12.1 Create AddOn
+POST {{baseUrl}}/api/addOn
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "restaurantId": "{{restaurantId}}",
+  "nameAr": "إضافة جديدة",
+  "nameEn": "New AddOn",
+  "price": 5.0
+}

@@ -1,0 +1,86 @@
+@baseUrl = https://localhost:7037/api/account
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MjI4YTk4YS05OTRjLTQ0M2QtYjdjMi0yNDAwM2UyMDU5OTUiLCJlbWFpbCI6ImdpdGh1YmtpbmFuQGdtYWlsLmNvbSIsInJvbGUiOiJDdXN0b21lciIsIm5iZiI6MTc5MjUzMDc0NCwiZXhwIjoxNzkyNTM0MzQ0LCJpYXQiOjE3OTI1MzA3NDQsImlzcyI6ImxvY2FsaG9zdCIsImF1ZCI6ImxvY2FsaG9zdCJ9.plWCu6eqQ6Z_3TuIwZeL2OhWXft2kD60h3yO3D0XbvA
+### Login As Manager
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+   "email": "githubkinan@gmail.com",
+    "password": "githubkinan@gmail.com"
+}
+### "email": "john.labor@localhost",
+### "password": "john.labor@localhost"
+### Login As Labor
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+    "email": "1john.labor@localhost",
+    "password": "1john.labor@localhost"
+}
+
+### Login As driver
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+    "email": "driver.labor@localhost",
+    "password": "driver.labor@localhost"
+}
+###
+
+POST https://localhost:7037/test/place
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Login As Labor
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+    "email": "1john.labor@localhost",
+    "password": "1john.labor@localhost"
+}
+
+### Refresh Token
+POST {{baseUrl}}/token/refresh-token
+Content-Type: application/json
+
+{
+    "ExpiredAccessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTUzOTkxYy04ZmM2LTQyYjYtYjQzOC03MDdiYzI2NzIzMmIiLCJlbWFpbCI6ImpvaG4ubGFib3JAbG9jYWxob3N0Iiwicm9sZSI6IlVzZXIiLCJuYmYiOjE3OTAzMzM5NzAsImV4cCI6MTc5MDMzNDAzMCwiaWF0IjoxNzkwMzMzOTcwLCJpc3MiOiJsb2NhbGhvc3QiLCJhdWQiOiJsb2NhbGhvc3QifQ.AmSDN6STSz-CGr1DPFVj7o4zrbMHmhqGcqvsSn7Mlgk",
+    "refreshToken": "hgDTn1VupNCEcM27ZqCp+O6+CQAe9zeb94CIjd4iuQ4="
+}
+
+### Register
+POST {{baseUrl}}/Register
+Content-Type: application/json
+
+{
+    "email": "githubkinan@gmail.com",
+    "password": "githubkinan@gmail.com",
+    "nameAr": "conf",
+    "nameEn":"conf",
+    "phone":"+971529776625"
+}
+
+### Login As Labor
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+     "email": "githubkinan@gmail.com",
+    "password": "githubkinan@gmail.com"
+}
+###
+GET {{baseUrl}}/sendPhoneCode
+Authorization: Bearer {{token}}
+
+###
+POST {{baseUrl}}/test
+Content-Type: Application/json
+Authorization: Bearer {{token}}
+
+
+###
+GET {{baseUrl}}/current-user/claims
+Authorization: Bearer {{token}}

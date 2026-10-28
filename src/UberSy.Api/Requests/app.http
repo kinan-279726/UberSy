@@ -1,0 +1,64 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+@baseUrl = https://localhost:7037/api
+@token =
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+@restaurantId = 9CA2C48F-CA9B-4194-8B36-1932C052A084
+@itemId = 43B2B6E1-92A7-4594-B3E5-08D2A5E35CDB
+@addressId = a1c12c3c-2433-493d-9fdb-19b17640f297
+
+### Search Nearby Restaurants
+POST {{baseUrl}}/search-nearby
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "latitude": 33.5138,
+  "longitude": 36.2765,
+  "radiusKm": 50
+}
+
+### Search Nearby Restaurants
+GET {{baseUrl}}/search-nearby?latitude=33.5138&longitude=36.2765&radiusKm=50
+
+### get restaurant by id 
+GET {{baseUrl}}/d49b9641-fe63-4bf2-b33a-9f30f734e52d
+
+### get category by restaurant id 
+GET {{baseUrl}}/d49b9641-fe63-4bf2-b33a-9f30f734e52d/category
+
+### get items by category id 
+GET {{baseUrl}}/items/7379251d-07dc-4d3a-aeeb-942d4aada5d3
+
+### get items by id 
+GET {{baseUrl}}/item/abd2ce7e-6151-4a3f-a7f3-baf44bbe3660
+
+###
+POST {{baseUrl}}/orders
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTUzOTkxYy04ZmM2LTQyYjYtYjQzOC03MDdiYzI2NzIzMmIiLCJlbWFpbCI6ImpvaG4ubGFib3JAbG9jYWxob3N0Iiwicm9sZSI6IlVzZXIiLCJuYmYiOjE3OTIyNzg5MTQsImV4cCI6MTc5MjI4MjUxNCwiaWF0IjoxNzkyMjc4OTE0LCJpc3MiOiJsb2NhbGhvc3QiLCJhdWQiOiJsb2NhbGhvc3QifQ.7oAPUpEnoz9RHXH0LK1ue9T4auhxoNkINhIxwJjTczc
+
+{
+  "restaurantId": "9CA2C48F-CA9B-4194-8B36-1932C052A084",
+  "addressId": "A1C12C3C-2433-493D-9FDB-19B17640F297",
+  "items": [
+    {
+      "itemId": "43B2B6E1-92A7-4594-B3E5-08D2A5E35CDB",
+      "quantity": 2,
+      "addOnIds": []
+    }
+  ]
+}
+###
+@orderId =1bbc3117-8efa-496a-8f7d-67032199d915
+###
+POST https://localhost:7037/api/orders/{{orderId}}/accept
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTUzOTkxYy04ZmM2LTQyYjYtYjQzOC03MDdiYzI2NzIzMmIiLCJlbWFpbCI6ImpvaG4ubGFib3JAbG9jYWxob3N0Iiwicm9sZSI6IlVzZXIiLCJuYmYiOjE3OTIyNzg5MTQsImV4cCI6MTc5MjI4MjUxNCwiaWF0IjoxNzkyMjc4OTE0LCJpc3MiOiJsb2NhbGhvc3QiLCJhdWQiOiJsb2NhbGhvc3QifQ.7oAPUpEnoz9RHXH0LK1ue9T4auhxoNkINhIxwJjTczc
+{
+}
+
+
+###
+GET https://localhost:7037/api/driver/offer/3bcc0373-a620-40c5-b345-e0b28b29bcd0/pending
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxNmFlMWI3OS0yYWQ0LTRmZjUtOWY0Yy03ZGJmY2RmZWRlOGEiLCJlbWFpbCI6ImRyaXZlci5sYWJvckBsb2NhbGhvc3QiLCJyb2xlIjoiVXNlciIsIm5iZiI6MTc5MjI3ODk1NSwiZXhwIjoxNzkyMjgyNTU1LCJpYXQiOjE3OTIyNzg5NTUsImlzcyI6ImxvY2FsaG9zdCIsImF1ZCI6ImxvY2FsaG9zdCJ9.WwRG4G66pCyn_l-5HWlf1cX8ZQOpFysPWHlrtcUM5cg

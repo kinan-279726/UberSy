@@ -1,0 +1,490 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍔 User — Order Food</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .header h1 {
+                color: #0288d1;
+                font-size: 24px;
+            }
+
+        .status {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+            .status.connected {
+                background: #d4edda;
+                color: #155724;
+            }
+
+            .status.disconnected {
+                background: #f8d7da;
+                color: #721c24;
+            }
+
+            .status.connecting {
+                background: #fff3cd;
+                color: #856404;
+            }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+            .card h2 {
+                color: #0288d1;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #eee;
+                font-size: 18px;
+            }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+            .form-group label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 5px;
+                color: #555;
+                font-size: 14px;
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 12px 15px;
+                border: 2px solid #ddd;
+                border-radius: 6px;
+                font-size: 14px;
+                font-family: inherit;
+                transition: border 0.2s;
+            }
+
+                .form-group input:focus {
+                    outline: none;
+                    border-color: #0288d1;
+                }
+
+        .btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: #0288d1;
+            color: white;
+        }
+
+            .btn-primary:hover {
+                background: #0277bd;
+                transform: scale(1.01);
+            }
+
+            .btn-primary:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+        .response-panel {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-right: 4px solid #0288d1;
+            font-family: 'Consolas', monospace;
+            font-size: 13px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+            .response-panel.success {
+                border-right-color: #28a745;
+                background: #f0f9f4;
+            }
+
+            .response-panel.error {
+                border-right-color: #dc3545;
+                background: #fdf0f0;
+            }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0288d1;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 9999;
+            animation: slideDown 0.3s;
+        }
+
+            .toast.success {
+                background: #28a745;
+            }
+
+            .toast.error {
+                background: #dc3545;
+            }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+            .info-row:last-child {
+                border-bottom: none;
+            }
+
+            .info-row span:first-child {
+                color: #666;
+            }
+
+            .info-row span:last-child {
+                font-weight: bold;
+                font-family: monospace;
+                color: #0288d1;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍔 User — Order Food</h1>
+            <div id="status" class="status disconnected">غير متصل</div>
+        </div>
+
+        <div class="card">
+            <h2>ℹ️ معلومات ثابتة (Hardcoded)</h2>
+            <div class="info-row">
+                <span>Customer ID</span>
+                <span id="infoCustomerId">—</span>
+            </div>
+            <div class="info-row">
+                <span>Restaurant ID</span>
+                <span id="infoRestaurantId">—</span>
+            </div>
+            <div class="info-row">
+                <span>Address ID</span>
+                <span id="infoAddressId">—</span>
+            </div>
+            <div class="info-row">
+                <span>Item ID</span>
+                <span id="infoItemId">—</span>
+            </div>
+            <div class="info-row">
+                <span>Hub URL</span>
+                <span id="infoHubUrl">—</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📦 Place Food Order</h2>
+            <div class="form-group">
+                <label>Quantity</label>
+                <input type="number" id="quantity" value="2" min="1" max="50">
+            </div>
+            <div class="form-group">
+                <label>Note (اختياري)</label>
+                <input type="text" id="note" placeholder="مثال: بدون بصل" value="">
+            </div>
+            <button id="btnPlaceOrder" class="btn btn-primary" disabled>
+                🚀 Place Order
+            </button>
+        </div>
+
+        <div class="card">
+            <h2>📨 Response</h2>
+            <div id="response" class="response-panel">
+                في انتظار الطلب...
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+
+    <script>
+                // ============================================================
+                // 1. الإعدادات — Hardcoded
+                // ============================================================
+                const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTUzOTkxYy04ZmM2LTQyYjYtYjQzOC03MDdiYzI2NzIzMmIiLCJlbWFpbCI6ImpvaG4ubGFib3JAbG9jYWxob3N0Iiwicm9sZSI6IlVzZXIiLCJuYmYiOjE3OTIwNjI4NDQsImV4cCI6MTc5MjA2NjQ0NCwiaWF0IjoxNzkyMDYyODQ0LCJpc3MiOiJsb2NhbGhvc3QiLCJhdWQiOiJsb2NhbGhvc3QifQ.dyvJp8HZ_WMpYFoxay2DQRwlhd0cxUbraUGdZwg5CFo';
+                const customerId = '1153991C-8FC6-42B6-B438-707BC267232B';
+                const restaurantId = '9CA2C48F-CA9B-4194-8B36-1932C052A084';
+                const addressId = 'A1C12C3C-2433-493D-9FDB-19B17640F297';
+                const itemId = '43B2B6E1-92A7-4594-B3E5-08D2A5E35CDB';
+
+                const apiBaseUrl = 'https://localhost:7037';
+                const hubUrl = 'https://localhost:7037/hubs/user';   // ⭐ user
+
+                // ============================================================
+                // 2. عناصر الصفحة
+                // ============================================================
+                const $ = (id) => document.getElementById(id);
+
+                // ============================================================
+                // 3. عرض المعلومات
+                // ============================================================
+                function renderInfo() {
+                    $('infoCustomerId').textContent = customerId;
+                    $('infoRestaurantId').textContent = restaurantId;
+                    $('infoAddressId').textContent = addressId;
+                    $('infoItemId').textContent = itemId;
+                    $('infoHubUrl').textContent = hubUrl;
+                }
+
+                // ============================================================
+                // 4. Toast
+                // ============================================================
+                function showToast(message, type = 'success') {
+                    const toast = document.createElement('div');
+                    toast.className = `toast ${type}`;
+                    toast.textContent = message;
+                    document.body.appendChild(toast);
+                    setTimeout(() => toast.remove(), 3000);
+                }
+
+                // ============================================================
+                // 5. الحالة
+                // ============================================================
+                function setStatus(status, text) {
+                    const el = $('status');
+                    el.className = `status ${status}`;
+                    el.textContent = text;
+                }
+
+                // ============================================================
+                // 6. الاستجابة
+                // ============================================================
+                function renderResponse(data, type = 'success') {
+                    const el = $('response');
+                    el.className = `response-panel ${type}`;
+                    el.textContent = typeof data === 'string'
+                        ? data
+                        : JSON.stringify(data, null, 2);
+                }
+
+                // ============================================================
+                // 7. الاتصال بـ SignalR (UserHub)
+                // ============================================================
+                const connection = new signalR.HubConnectionBuilder()
+                    .withUrl(hubUrl, {
+                        accessTokenFactory: () => token
+                    })
+                    .withAutomaticReconnect()
+                    .configureLogging(signalR.LogLevel.Information)
+                    .build();
+
+                // ============================================================
+                // 8. الأحداث
+                // ============================================================
+                connection.on("OrderAccepted", (data) => {
+                    console.log("✅ OrderAccepted:", data);
+                    showToast("✅ تم قبول طلبك من المطعم");
+                    renderResponse({ event: "OrderAccepted", data }, 'success');
+                });
+
+                connection.on("OrderRejected", (data) => {
+                    console.log("❌ OrderRejected:", data);
+                    showToast("❌ تم رفض طلبك من المطعم", 'error');
+                    renderResponse({ event: "OrderRejected", data }, 'error');
+                });
+
+                connection.on("OrderOutForDelivery", (data) => {
+                    console.log("🚗 OrderOutForDelivery:", data);
+                    showToast("🚗 طلبك في الطريق");
+                    renderResponse({ event: "OrderOutForDelivery", data }, 'success');
+                });
+
+                connection.on("OrderDelivered", (data) => {
+                    console.log("✅ OrderDelivered:", data);
+                    showToast("✅ تم تسليم طلبك");
+                    renderResponse({ event: "OrderDelivered", data }, 'success');
+                });
+
+                connection.on("DriverLocationUpdated", (data) => {
+                    console.log("📍 Driver Location:", data);
+                });
+
+                connection.onreconnecting(() => {
+                    setStatus('connecting', 'جاري إعادة الاتصال...');
+                });
+
+                connection.onreconnected((connectionId) => {
+                    setStatus('connected', 'متصل');
+                    console.log("✅ Reconnected:", connectionId);
+                });
+
+                connection.onclose(() => {
+                    setStatus('disconnected', 'غير متصل');
+                });
+
+                // ============================================================
+                // 9. بدء الاتصال
+                // ============================================================
+                (async () => {
+                    try {
+                        setStatus('connecting', 'جاري الاتصال...');
+                        await connection.start();
+                        setStatus('connected', 'متصل');
+                        console.log("✅ Connected:", connection.connectionId);
+
+                        // ⭐ JoinUserGroup
+                        await connection.invoke("JoinUserGroup", customerId);
+                        console.log(`✅ Joined Group: user-${customerId}`);
+
+                        $('btnPlaceOrder').disabled = false;
+                        showToast(`✅ متصل: ${customerId.substring(0, 8)}...`);
+                    } catch (err) {
+                        setStatus('disconnected', 'فشل الاتصال');
+                        console.error("❌ Connection Error:", err);
+                        showToast(`❌ فشل الاتصال: ${err.message}`, 'error');
+                    }
+                })();
+
+                // ============================================================
+                // 10. إنشاء الطلب
+                // ============================================================
+                async function placeOrder() {
+                    const quantity = parseInt($('quantity').value) || 1;
+                    const note = $('note').value.trim() || null;
+
+                    const payload = {
+                        restaurantId: restaurantId,
+                        addressId: addressId,
+                        items: [
+                            {
+                                itemId: itemId,
+                                quantity: quantity,
+                                addOnIds: []
+                            }
+                        ],
+                        paymentMethod: 1,
+                        note: note
+                    };
+
+                    renderResponse({ request: payload, status: "sending..." });
+
+                    try {
+                        const response = await fetch(`${apiBaseUrl}/api/order/place`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify(payload)
+                        });
+
+                        const data = await response.json().catch(() => null);
+
+                        if (response.ok) {
+                            console.log("✅ Order Placed:", data);
+                            showToast("✅ تم إرسال الطلب بنجاح");
+                            renderResponse({
+                                status: "SUCCESS",
+                                httpCode: response.status,
+                                response: data
+                            }, 'success');
+                        } else {
+                            console.error("❌ Order Failed:", data);
+                            showToast(`❌ فشل الطلب: ${response.status}`, 'error');
+                            renderResponse({
+                                status: "FAILED",
+                                httpCode: response.status,
+                                response: data
+                            }, 'error');
+                        }
+                    } catch (err) {
+                        console.error("❌ Fetch Error:", err);
+                        showToast(`❌ خطأ: ${err.message}`, 'error');
+                        renderResponse({
+                            status: "ERROR",
+                            error: err.message
+                        }, 'error');
+                    }
+                }
+
+                // ============================================================
+                // 11. الأزرار
+                // ============================================================
+                $('btnPlaceOrder').addEventListener('click', placeOrder);
+
+                // ============================================================
+                // 12. عرض المعلومات
+                // ============================================================
+                renderInfo();
+
+                console.log("💡 User Page Loaded");
+                console.log("   Customer ID:", customerId);
+                console.log("   Restaurant ID:", restaurantId);
+                console.log("   Address ID:", addressId);
+                console.log("   Item ID:", itemId);
+    </script>
+</body>
+</html>
