@@ -2,11 +2,14 @@
   <Folder Name="/Solution Items/">
     <File Path=".dockerignore" />
     <File Path=".editorconfig" />
+    <File Path=".env" />
+    <File Path=".env.example" />
     <File Path=".gitignore" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
     <File Path="docker-compose.yml" />
     <File Path="Dockerfile" />
+    <File Path="README.md" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/UberSy.Api/UberSy.Api.csproj" />
@@ -14,5 +17,12 @@
     <Project Path="src/UberSy.Contract/UberSy.Contract.csproj" />
     <Project Path="src/UberSy.Domain/UberSy.Domain.csproj" />
     <Project Path="src/UberSy.Infrastructure/UberSy.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/UberSy.Api.IntegrationTests/UberSy.Api.IntegrationTests.csproj" />
+    <Project Path="test/UberSy.Application.SubcutaneousTests/UberSy.Application.SubcutaneousTests.csproj" />
+    <Project Path="test/UberSy.Application.UnitTests/UberSy.Application.UnitTests.csproj" />
+    <Project Path="test/UberSy.Domain.UnitTests/UberSy.Domain.UnitTests.csproj" />
+    <Project Path="test/UberSy.Test.Common/UberSy.Test.Common.csproj" />
   </Folder>
 </Solution>

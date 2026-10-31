@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="xunit" />
+		<PackageReference Include="NSubstitute" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Using Include="Xunit" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\UberSy.Domain\UberSy.Domain.csproj" />
+		<ProjectReference Include="..\..\src\UberSy.Application\UberSy.Application.csproj" />
+		<ProjectReference Include="..\..\src\UberSy.Infrastructure\UberSy.Infrastructure.csproj" />
+	</ItemGroup>
+
+</Project>

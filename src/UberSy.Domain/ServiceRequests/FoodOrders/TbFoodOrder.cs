@@ -48,8 +48,6 @@ public sealed class TbFoodOrder : AuditableEntity
     {
         if (restaurantId == Guid.Empty) return FoodOrderErrors.RestaurantIdRequired;
         if (addressId == Guid.Empty) return FoodOrderErrors.AddressIdRequired;
-
-        Console.WriteLine("UberSy.Domain.ServiceRequests.FoodOrders add this line to configurations");
         
         var order = new TbFoodOrder(id, restaurantId, addressId , responseTimeout);
 
