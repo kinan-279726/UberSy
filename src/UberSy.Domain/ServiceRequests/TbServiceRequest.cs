@@ -20,19 +20,19 @@ public sealed class TbServiceRequest : AuditableEntity
     public Guid CustomerId { get; private set; }
 
     public ServiceType ServiceType { get; private set; }
-    
-    public int TrackingNumber { get; private set; } 
-    
+
+    public int TrackingNumber { get; private set; }
+
     public ServiceRequestStatus Status { get; private set; }
-    
+
     public decimal TotalAmount { get; private set; }
-    
+
     public string? CancellationReason { get; private set; }
 
     public TbFoodOrder? FoodOrder { get; private set; }
-    
+
     public TbTableReservation? TableReservation { get; private set; }
-    
+
     public TbRideRequest? RideRequest { get; private set; }
 
     private readonly List<TbComplaint> _complaints = [];
@@ -96,7 +96,7 @@ public sealed class TbServiceRequest : AuditableEntity
 
         Status = ServiceRequestStatus.Preparing;
 
-        AddDomainEvent(new ServiceRequestPreparing(Id ,CustomerId));
+        AddDomainEvent(new ServiceRequestPreparing(Id, CustomerId));
 
         return Result.Updated;
     }
@@ -108,7 +108,7 @@ public sealed class TbServiceRequest : AuditableEntity
 
         Status = ServiceRequestStatus.OutForDelivery;
 
-        AddDomainEvent(new ServiceRequestOutForDelivery(Id , CustomerId));
+        AddDomainEvent(new ServiceRequestOutForDelivery(Id, CustomerId));
 
         return Result.Updated;
     }
@@ -120,7 +120,7 @@ public sealed class TbServiceRequest : AuditableEntity
 
         Status = ServiceRequestStatus.Delivered;
 
-        AddDomainEvent(new ServiceRequestDelivered(Id , CustomerId));
+        AddDomainEvent(new ServiceRequestDelivered(Id, CustomerId));
 
         return Result.Updated;
     }
@@ -153,8 +153,8 @@ public sealed class TbServiceRequest : AuditableEntity
 
         if (!allowed)
         {
-            if (Status == ServiceRequestStatus.Delivered) return ServiceRequestErrors.ServiceRequestAlreadyDelivered;
             if (Status == ServiceRequestStatus.Cancelled) return ServiceRequestErrors.ServiceRequestAlreadyCancelled;
+            if (Status == ServiceRequestStatus.Delivered) return ServiceRequestErrors.ServiceRequestAlreadyDelivered;
             return ServiceRequestErrors.InvalidStatusTransition;
         }
 

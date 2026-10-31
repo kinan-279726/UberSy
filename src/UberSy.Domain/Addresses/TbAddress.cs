@@ -93,7 +93,7 @@ public sealed class TbAddress : Entity
         if (!boundary.IsValid) return AddressErrors.BoundaryInvalid;
 
         if (label is { Length: > 100 }) return AddressErrors.LabelTooLong;
-        if (!Regex.IsMatch((phone is null ? "" : phone), @"^\+9639?\d{8}$")) return AddressErrors.InvalidPhoneNumber;
+        if (!Regex.IsMatch((phone is null ? "" : phone), @"^\+9639\d{8}$")) return AddressErrors.InvalidPhoneNumber;
 
         return Result.Success;
     }

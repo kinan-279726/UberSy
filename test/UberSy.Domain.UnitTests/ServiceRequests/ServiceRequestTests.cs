@@ -30,7 +30,7 @@ public class ServiceRequestTests
         if (targetStatus >= ServiceRequestStatus.OutForDelivery)
             request.MarkAsOutForDelivery();
 
-        if (targetStatus >= ServiceRequestStatus.Delivered)
+        if (targetStatus >= ServiceRequestStatus.Delivered && targetStatus != ServiceRequestStatus.Cancelled)
             request.MarkAsDelivered();
 
         if (targetStatus == ServiceRequestStatus.Cancelled)

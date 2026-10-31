@@ -2,11 +2,13 @@
 
 	<PropertyGroup>
 		<IsPackable>false</IsPackable>
+		<IsTestProject>false</IsTestProject>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="xunit" />
 		<PackageReference Include="NSubstitute" />
+		<PackageReference Include="Azure.Core" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -18,5 +20,4 @@
 		<ProjectReference Include="..\..\src\UberSy.Application\UberSy.Application.csproj" />
 		<ProjectReference Include="..\..\src\UberSy.Infrastructure\UberSy.Infrastructure.csproj" />
 	</ItemGroup>
-
 </Project>

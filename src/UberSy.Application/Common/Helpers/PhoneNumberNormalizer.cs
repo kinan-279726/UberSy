@@ -7,12 +7,29 @@ public class PhoneNumberNormalizer
     {
         if (string.IsNullOrWhiteSpace(raw)) return null;
 
-        var cleaned = new string(raw.Where(c => char.IsDigit(c) || c == '+').ToArray());
+        var trimmed = raw.Trim();
+        var hasLeadingPlus = trimmed.StartsWith('+');
+        var digits = new string(trimmed.Where(char.IsDigit).ToArray());
 
-        if (cleaned.StartsWith("00")) cleaned = "+" + cleaned[2..];
-        if (cleaned.StartsWith("09") && cleaned.Length == 10) return "+963" + cleaned[1..];
-        if (cleaned.StartsWith('9') && cleaned.Length == 9) return "+963" + cleaned;
-        if (cleaned.StartsWith('+') && cleaned.Length is >= 9 and <= 16) return cleaned;
+        if (digits.Length == 0) return null;
+
+        // 00 → +
+        if (digits.StartsWith("00"))
+        {
+            digits = digits[2..];
+            hasLeadingPlus = true;
+        }
+
+        // 09xxxxxxxx
+        if (!hasLeadingPlus && digits.StartsWith("09") && digits.Length == 10)
+            return "+963" + digits[1..];
+
+        // 9xxxxxxxx (9 أرقام) → +9639xxxxxxxx
+        if (!hasLeadingPlus && digits.StartsWith('9') && digits.Length == 9)
+            return "+963" + digits;
+
+        if (hasLeadingPlus && digits.StartsWith("9639") && digits.Length == 12)
+            return "+" + digits;
 
         return null;
     }
