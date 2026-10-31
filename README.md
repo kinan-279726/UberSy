@@ -4,7 +4,9 @@ A multi-service delivery platform for Syria, built with ASP.NET Core and Clean A
 
 **Status:** food delivery is complete end to end (customer, restaurant, driver, admin and agent). Ride/package delivery and table reservation are planned and are not implemented yet.
 
-![API reference](docs/images/api-reference.png)
+| API reference | Email verification |
+|---|---|
+| ![API reference](docs/images/api-reference.png) | ![Email verification](docs/images/email-verification.png) |
 
 ## Why this project
 
@@ -127,6 +129,8 @@ src/
 ```
 
 Dependencies point inward: `Api` → `Application` → `Domain`, and `Infrastructure` implements the interfaces defined in `Application`.
+
+Database design: [ERD](docs/images/erd.png)
 
 ## Roadmap
 
