@@ -25,7 +25,7 @@ public class TagTests
     [InlineData("")]
     [InlineData("   ")]
     [InlineData(null)]
-    public void Create_ShouldReturnError_WhenNameArIsInvalid(string invalidName)
+    public void Create_ShouldReturnError_WhenNameArIsInvalid(string? invalidName)
     {
         var result = TbTag.Create(
             id: Guid.NewGuid(),
@@ -40,7 +40,7 @@ public class TagTests
     [InlineData("")]
     [InlineData("   ")]
     [InlineData(null)]
-    public void Create_ShouldReturnError_WhenNameEnIsInvalid(string invalidName)
+    public void Create_ShouldReturnError_WhenNameEnIsInvalid(string? invalidName)
     {
         var result = TbTag.Create(
             id: Guid.NewGuid(),
@@ -80,7 +80,7 @@ public class TagTests
     [InlineData("Valid", "")]
     [InlineData("Valid", "   ")]
     [InlineData("Valid", null)]
-    public void Update_ShouldReturnError_WhenAnyNameIsInvalid(string invalidNameAr, string invalidNameEn)
+    public void Update_ShouldReturnError_WhenAnyNameIsInvalid(string? invalidNameAr, string? invalidNameEn)
     {
         var tag = CreateValidTag();
 
