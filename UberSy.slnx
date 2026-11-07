@@ -13,7 +13,7 @@
   </Folder>
   <Folder Name="/Solution Items/.github/" />
   <Folder Name="/Solution Items/.github/workflows/">
-    <File Path="ci.yml" />
+    <File Path=".github/workflows/ci.yml" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/UberSy.Api/UberSy.Api.csproj" />

@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using UberSy.Domain.Common.Results;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace UberSy.Application.Features.Restaurants.Menu.Items.Commands.AssignAddOnToItem;
 

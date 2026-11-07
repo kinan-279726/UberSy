@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using UberSy.Application.Features.DeliveryPricingRules.Commands.UpdatePricingRuleMaxDistance;
 using UberSy.Domain.Common.Results;
 
 namespace UberSy.Application.Features.DeliveryPricingRules.Commands.UpdateRates;

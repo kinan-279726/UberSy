@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using UberSy.Domain.Common.Constants;
 using UberSy.Domain.Identity;
 using UberSy.Infrastructure.Identity;
 
@@ -81,7 +82,7 @@ public class ApplicationDbContextInitialiser
             {
                 var admin = new ApplicationUser
                 {
-                    Id = Guid.NewGuid(),
+                    Id = Guid.Parse(SystemConstants.ManagerId),
                     UserName = email,
                     Email = email,
                     EmailConfirmed = true,
@@ -97,7 +98,7 @@ public class ApplicationDbContextInitialiser
                 }
                 else
                 {
-                    _logger.LogError("Failed To create admin: {Errors}",string.Join(", ", created.Errors.Select(e => e.Description)));
+                    _logger.LogError("Failed To create admin: {Errors}", string.Join(", ", created.Errors.Select(e => e.Description)));
                 }
             }
         }

@@ -1,7 +1,4 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UberSy.Domain.Common.Results;
 
 namespace UberSy.Application.Features.Addresses.Commands.UpdateAddressDetails;

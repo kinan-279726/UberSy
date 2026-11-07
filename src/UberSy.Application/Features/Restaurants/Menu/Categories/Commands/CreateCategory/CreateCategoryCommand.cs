@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using UberSy.Application.Features.Restaurants.Menu.Categories.Dtos;
 using UberSy.Domain.Common.Results;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace UberSy.Application.Features.Restaurants.Menu.Categories.Commands.CreateCategory;
 

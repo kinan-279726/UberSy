@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NetTopologySuite.Geometries;
-using System.Net.Http.Headers;
 using UberSy.Application.Common.Errors;
 using UberSy.Application.Common.Interfaces;
 using UberSy.Application.Features.Addresses.Dtos;
