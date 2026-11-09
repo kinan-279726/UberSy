@@ -8,20 +8,23 @@ using UberSy.Domain.Identity;
 
 namespace UberSy.Application.Features.Restaurants.Commands.ApproveRestaurant;
 
-public sealed class ApproveRestaurantCommandHandler(IApplicationDbContext context,IUserRoleService userRole , IOwnershipValidator ownership , ILogger<ApproveRestaurantCommandHandler> logger)
+public sealed class ApproveRestaurantCommandHandler(IApplicationDbContext context,IUserRoleService userRole , IUser user , ILogger<ApproveRestaurantCommandHandler> logger)
     : IRequestHandler<ApproveRestaurantCommand, Result<Updated>>
 {
     private readonly IApplicationDbContext _context = context;
     private readonly IUserRoleService _userRole = userRole;
-    private readonly IOwnershipValidator _ownership = ownership;
+    private readonly IUser _user = user;
     private readonly ILogger<ApproveRestaurantCommandHandler> _logger = logger;
 
     public async Task<Result<Updated>> Handle(ApproveRestaurantCommand request, CancellationToken cancellationToken)
     {
-        var isManager =  _ownership.EnsureIsAManager(cancellationToken);
-        if (isManager.IsError)
+        if(_user.Id is null)
         {
-            return isManager.Errors;
+            return ApplicationErrors.Unauthorized;
+        }
+        if (!_user.IsInRole(Roles.Admin))
+        {
+            return ApplicationErrors.AccessDenied;
         }
 
         var restaurant = await _context.TbRestaurants.FirstOrDefaultAsync(r => r.Id == request.RestaurantId, cancellationToken);

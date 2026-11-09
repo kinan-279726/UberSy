@@ -47,34 +47,52 @@ public sealed class GetRestaurantStatsQueryHandler(IApplicationDbContext context
 
         var dailyRaw = await orders
             .Where(o => o.IdNavigation.Status == ServiceRequestStatus.Delivered)
-            .Select(o => new { o.IdNavigation.CreatedAtUtc, o.IdNavigation.TotalAmount, o.PlatformCommissionFromRestaurant })
+            .Select(o => new
+            {
+                o.IdNavigation.CreatedAtUtc,
+                o.IdNavigation.TotalAmount,
+                o.PlatformCommissionFromRestaurant
+            })
             .ToListAsync(cancellationToken);
 
         var daily = dailyRaw
             .GroupBy(x => DateOnly.FromDateTime(x.CreatedAtUtc.ToOffset(TimeSpan.FromHours(3)).DateTime))
             .OrderBy(g => g.Key)
-            .Select(g => new DailyStatDto(g.Key, g.Count(),
+            .Select(g => new DailyStatDto(
+                g.Key,
+                g.Count(),
                 g.Sum(x => x.TotalAmount),
                 g.Sum(x => x.TotalAmount - x.PlatformCommissionFromRestaurant)))
             .ToList();
 
-        var topItems = await _context.TbOrderItems.AsNoTracking()
+        var topItemsRaw = await _context.TbOrderItems.AsNoTracking()
             .Where(oi => oi.FoodOrder.RestaurantId == request.RestaurantId
                 && oi.FoodOrder.IdNavigation.Status == ServiceRequestStatus.Delivered
                 && oi.FoodOrder.IdNavigation.CreatedAtUtc >= fromUtc
                 && oi.FoodOrder.IdNavigation.CreatedAtUtc < toUtc)
             .GroupBy(oi => new { oi.ItemId, oi.Item.NameAr, oi.Item.NameEn })
-            .Select(g => new TopItemDto(g.Key.ItemId, g.Key.NameAr, g.Key.NameEn, g.Sum(x => x.Quantity)))
+            .Select(g => new
+            {
+                g.Key.ItemId,
+                g.Key.NameAr,
+                g.Key.NameEn,
+                QuantitySold = g.Sum(x => x.Quantity)
+            })
             .OrderByDescending(x => x.QuantitySold)
             .Take(5)
             .ToListAsync(cancellationToken);
+
+        var topItems = topItemsRaw
+            .Select(x => new TopItemDto(x.ItemId, x.NameAr, x.NameEn, x.QuantitySold))
+            .ToList();
 
         return new RestaurantStatsDto(
             from, to,
             byStatus.Sum(x => x.Count),
             deliveredCount,
             byStatus.Where(x => x.Status == ServiceRequestStatus.Cancelled).Sum(x => x.Count),
-            byStatus.Where(x => x.Status is ServiceRequestStatus.Pending or ServiceRequestStatus.Preparing
+            byStatus.Where(x => x.Status is ServiceRequestStatus.Pending
+                                        or ServiceRequestStatus.Preparing
                                         or ServiceRequestStatus.OutForDelivery).Sum(x => x.Count),
             gross, commission, gross - commission,
             deliveredCount == 0 ? 0 : Math.Round(gross / deliveredCount, 2),

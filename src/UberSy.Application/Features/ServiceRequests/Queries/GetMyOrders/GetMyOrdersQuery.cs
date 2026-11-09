@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using UberSy.Application.Common.Interfaces;
 using UberSy.Application.Common.Models;
@@ -10,6 +11,15 @@ namespace UberSy.Application.Features.ServiceRequests.Queries.GetMyOrders;
 
 public sealed record GetMyOrdersQuery(ServiceRequestStatus? Status, int PageNumber = 1, int PageSize = 20)
     : IRequest<Result<PagedList<CustomerOrderListItemDto>>>;
+
+public sealed class GetMyOrderQueryValidator : AbstractValidator<GetMyOrdersQuery>
+{
+    public GetMyOrderQueryValidator()
+    {
+        RuleFor(x => x.PageNumber).GreaterThan(0);
+        RuleFor(x => x.PageSize).InclusiveBetween(1, 50);
+    }
+}
 
 // for custormer 
 public sealed class GetMyOrdersQueryHandler(IApplicationDbContext context, IOwnershipValidator ownership)

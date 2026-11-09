@@ -22,10 +22,10 @@ public static class ServiceRequestCommandFactory
 
     // 2. Cancel Service
     public static CancelServiceCommand CreateCancelServiceCommand(
-        Guid? serviceId = null)
+        Guid? serviceId = null , string? reason = null)
     {
         return new CancelServiceCommand(
-            serviceId ?? Guid.NewGuid());
+            serviceId ?? Guid.NewGuid() , reason?? "Test");
     }
 
     // 3. Release Order

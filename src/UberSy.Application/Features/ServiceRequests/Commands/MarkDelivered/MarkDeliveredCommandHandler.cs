@@ -42,35 +42,37 @@ public sealed class MarkDeliveredCommandHandler(
             _logger.LogWarning("Could Not Reset Driver '{DriverId}' Status: {Error}", driverId, finishResult.TopError.Description);
         }
 
-        var alreadyDeducted = await _context.TbDriverWalletTransactions
-           .AnyAsync(t => t.ServiceRequestId == request.ServiceRequestId
-                          && t.Type == WalletTransactionType.PlatformCommissionDeduction, cancellation);
-        if (alreadyDeducted)
-        {
-            return ApplicationErrors.AlreadyDeducted;
-        }
-
-        var wallet = await _context.TbDriverWallets
-            .FirstOrDefaultAsync(w => w.DriverId == foodOrder.DriverId, cancellation);
-
-        if (wallet is null)
-        {
-            return ApplicationErrors.WalletNotFound;
-        }
-
         var platformDue = foodOrder.PlatformCommissionFromRestaurant
                           + (foodOrder.DeliveryFee - foodOrder.DriverEarning);
 
-        if (platformDue <= 0) return ApplicationErrors.CommissionNegative;
+        if (platformDue < 0) return ApplicationErrors.CommissionNegative;
 
-        var deduct = wallet.Deduct(platformDue);
-        if (deduct.IsError)
+        if (platformDue > 0)
         {
-            _logger.LogError("Wallet Deduction Failed For Order '{Id}': {Error}", foodOrder.Id, deduct.TopError.Description);
-            return deduct.Errors;
-        }
+            var alreadyDeducted = await _context.TbDriverWalletTransactions
+          .AnyAsync(t => t.ServiceRequestId == request.ServiceRequestId
+                         && t.Type == WalletTransactionType.PlatformCommissionDeduction, cancellation);
+            if (alreadyDeducted)
+            {
+                return ApplicationErrors.AlreadyDeducted;
+            }
 
-        var transaction = TbDriverWalletTransaction.Create(
+            var wallet = await _context.TbDriverWallets
+           .FirstOrDefaultAsync(w => w.DriverId == foodOrder.DriverId, cancellation);
+
+            if (wallet is null)
+            {
+                return ApplicationErrors.WalletNotFound;
+            }
+
+            var deduct = wallet.Deduct(platformDue);
+            if (deduct.IsError)
+            {
+                _logger.LogError("Wallet Deduction Failed For Order '{Id}': {Error}", foodOrder.Id, deduct.TopError.Description);
+                return deduct.Errors;
+            }
+
+            var transaction = TbDriverWalletTransaction.Create(
             id: Guid.NewGuid(),
             driverWalletId: wallet.Id,
             serviceRequestId: foodOrder.Id,
@@ -78,12 +80,13 @@ public sealed class MarkDeliveredCommandHandler(
             amount: -platformDue,
             type: WalletTransactionType.PlatformCommissionDeduction);
 
-        if (transaction.IsError)
-        {
-            _logger.LogError("Wallet Transaction Failed For Order '{Id}': {Error}", foodOrder.Id, transaction.TopError.Description);
-            return transaction.Errors;
+            if (transaction.IsError)
+            {
+                _logger.LogError("Wallet Transaction Failed For Order '{Id}': {Error}", foodOrder.Id, transaction.TopError.Description);
+                return transaction.Errors;
+            }
+            _context.TbDriverWalletTransactions.Add(transaction.Value);
         }
-        _context.TbDriverWalletTransactions.Add(transaction.Value);
 
         await _context.SaveChangesAsync(cancellation);
 

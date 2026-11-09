@@ -35,6 +35,8 @@ public sealed class AcceptOrderCommandHandler(
             return ownerResult.Errors;
         }
 
+        if (foodOrder.ResponseTimeout < DateTime.UtcNow) return ApplicationErrors.OrderResponseTimeOut;
+
         var result = foodOrder.IdNavigation.MarkAsPreparing();
 
         if (result.IsError)

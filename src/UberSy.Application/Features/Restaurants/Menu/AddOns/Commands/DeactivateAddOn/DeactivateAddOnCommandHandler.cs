@@ -18,7 +18,7 @@ public sealed class DeactivateAddOnCommandHandler(IApplicationDbContext context 
     {
         var addOn = await _context.TbAddOns.FirstOrDefaultAsync(a => a.Id == requst.AddOnId, cancellationToken);
 
-        if (addOn is null) return ApplicationErrors.ItemNotFound;
+        if (addOn is null) return ApplicationErrors.AddOnNotFound;
 
         var isOwner = await _ownership.EnsureIsOwnerByRestaurantIdAsync(addOn.RestaurantId, cancellationToken);
         if (isOwner.IsError)

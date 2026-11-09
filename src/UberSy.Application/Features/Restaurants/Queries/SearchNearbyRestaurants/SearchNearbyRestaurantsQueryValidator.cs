@@ -9,14 +9,10 @@ public sealed class SearchNearbyRestaurantsQueryValidator : AbstractValidator<Se
         RuleFor(x => x.RadiusKm).GreaterThan(0).LessThanOrEqualTo(50);
 
         RuleFor(x => x.Latitude)
-           .NotEmpty()
-           .WithMessage("Latitude Is Required")
            .InclusiveBetween(-90, 90)
            .WithMessage("Latitude Must Be Between -90 And 90");
 
         RuleFor(x => x.Longitude)
-            .NotEmpty()
-            .WithMessage("Longitude Is Required")
             .InclusiveBetween(-180, 180)
             .WithMessage("Longitude Must Be Between -180 And 180");
 

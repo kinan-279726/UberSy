@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
 using UberSy.Application.Common.Errors;
 using UberSy.Application.Common.Interfaces;
-using UberSy.Domain.Common.Constants;
 using UberSy.Domain.Common.Results;
 
 namespace UberSy.Application.Features.Restaurants.Commands.UpdateRestaurantLocation;

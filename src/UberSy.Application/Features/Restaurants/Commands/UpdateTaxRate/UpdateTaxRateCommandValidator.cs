@@ -8,7 +8,7 @@ public sealed class UpdateTaxRateCommandValidator : AbstractValidator<UpdateTaxR
 {
     public UpdateTaxRateCommandValidator()
     {
-        RuleFor(x => x.TaxRate).NotEmpty().InclusiveBetween(0, 100);
+        RuleFor(x => x.TaxRate).InclusiveBetween(0, 100);
         RuleFor(x => x.RestaurantId).NotEmpty();
     }
 }

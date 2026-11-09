@@ -25,21 +25,20 @@ public static class RestaurantFactory
     double longitude = 36.2765)
     {
         return TbRestaurant.Create(
-            id: Guid.NewGuid(),
-            ownerId: Guid.NewGuid(),
-            nameAr: nameAr,
-            nameEn: nameEn,
-            descriptionAr: descriptionAr,
-            descriptionEn: descriptionEn,
-            phone: phone,
-            email: email,
-            commissionRate: commissionRate,
-            taxRate: taxRate,
-            openingTime: openingTime ?? new TimeOnly(9, 0),
-            closingTime: closingTime ?? new TimeOnly(23, 0),
-            minOrderAmount: minOrderAmount,
-            maxOrderAmount: maxOrderAmount,
-            boundary: new Point(latitude , longitude)
-        );
+    id: id ?? Guid.NewGuid(),
+    ownerId: ownerId ?? Guid.NewGuid(),
+    nameAr: nameAr,
+    nameEn: nameEn,
+    descriptionAr: descriptionAr,
+    descriptionEn: descriptionEn,
+    phone: phone,
+    email: email,
+    commissionRate: commissionRate,
+    taxRate: taxRate,
+    openingTime: openingTime ?? new TimeOnly(9, 0),
+    closingTime: closingTime ?? new TimeOnly(23, 0),
+    minOrderAmount: minOrderAmount,
+    maxOrderAmount: maxOrderAmount,
+    boundary: new Point(longitude, latitude) { SRID = 4326 });
     }
 }

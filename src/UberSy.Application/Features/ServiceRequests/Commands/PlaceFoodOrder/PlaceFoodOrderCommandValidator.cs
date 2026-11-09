@@ -8,14 +8,16 @@ public sealed class PlaceFoodOrderCommandValidator : AbstractValidator<PlaceFood
     {
         RuleFor(x => x.RestaurantId).NotEmpty();
         RuleFor(x => x.AddressId).NotEmpty();
-
+        RuleFor(x => x.Items).NotEmpty().Must(i => i.Count <= 50)
+            .WithMessage("An order cannot contain more than 50 lines.");
         RuleFor(x => x.Items)
             .NotEmpty().WithMessage("Order Must Contain At Least One Item.");
 
         RuleForEach(x => x.Items).ChildRules(item =>
         {
             item.RuleFor(i => i.ItemId).NotEmpty();
-            item.RuleFor(i => i.Quantity).GreaterThan(0);
+            item.RuleFor(i => i.Quantity).InclusiveBetween(1, 99);
+            item.RuleFor(i => i.AddOnIds).NotNull();
         });
     }
 }

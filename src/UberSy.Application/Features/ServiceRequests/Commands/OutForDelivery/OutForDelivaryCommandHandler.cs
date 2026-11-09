@@ -7,7 +7,7 @@ using UberSy.Domain.Common.Results;
 
 namespace UberSy.Application.Features.ServiceRequests.Commands.OutForDelivery;
 
-public sealed class OutForDelivaryCommandHandler(IApplicationDbContext context,IOwnershipValidator ownership , ILogger<OutForDelivaryCommandHandler> logger)
+public sealed class OutForDelivaryCommandHandler(IApplicationDbContext context, IOwnershipValidator ownership, ILogger<OutForDelivaryCommandHandler> logger)
     : IRequestHandler<OutForDelivaryCommand, Result<Updated>>
 {
     private readonly IApplicationDbContext _context = context;
@@ -17,19 +17,18 @@ public sealed class OutForDelivaryCommandHandler(IApplicationDbContext context,I
     public async Task<Result<Updated>> Handle(OutForDelivaryCommand request, CancellationToken cancellationToken)
     {
         var driverResult = await _ownership.IsDriver();
-        if(driverResult.IsError)
+        if (driverResult.IsError)
         {
             return driverResult.Errors;
         }
 
-
-       var order = await _context.TbFoodOrders.AnyAsync(o => o.DriverId == driverResult.Value, cancellationToken);
+        var order = await _context.TbFoodOrders.AnyAsync(o => o.DriverId == driverResult.Value && o.Id == request.ServiceRequestId, cancellationToken);
 
         if (!order) return ApplicationErrors.ServiceRequestNotFound;
 
         var servic = await _context.TbServiceRequests.FirstOrDefaultAsync(s => s.Id == request.ServiceRequestId, cancellationToken);
 
-        if(servic is null) return ApplicationErrors.ServiceRequestNotFound;
+        if (servic is null) return ApplicationErrors.ServiceRequestNotFound;
 
         var serviceResult = servic.MarkAsOutForDelivery();
 

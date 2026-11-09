@@ -34,4 +34,23 @@ public static class DriverFactory
             model,
             color);
     }
+
+    public static TbDriver CreateValidDriver(
+    Guid? userId = null,
+    bool approved = false,
+    bool online = false,
+    string? nationalId = null)
+    {
+        var result = CreateDriver(userId: userId, nationalId: nationalId);
+
+        if (result.IsError)
+            throw new InvalidOperationException($"{result.TopError.Code}: {result.TopError.Description}");
+
+        var driver = result.Value;
+
+        if (approved) driver.Approve();
+        if (online) driver.GoOnline();
+
+        return driver;
+    }
 }

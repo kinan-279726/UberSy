@@ -11,6 +11,9 @@ public static class ApplicationErrors
     Error.Conflict("Order_Cannot_Be_Released",
         "The order cannot be released after it has been picked up.");
 
+    public static Error OrderResponseTimeOut =>
+        Error.Validation("Order_Cannot_Accepted", "Order Response TimeOut");
+
     public static Error AddOnNotAvailableForItem =>
     Error.Validation("AddOn_Not_Available_For_Item", "This AddOn Is Not Available For The Selected Item");
 

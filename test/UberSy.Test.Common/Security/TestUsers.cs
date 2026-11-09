@@ -1,4 +1,5 @@
-﻿using UberSy.Infrastructure.Identity;
+﻿using UberSy.Domain.Common.Constants;
+using UberSy.Infrastructure.Identity;
 
 namespace UberSy.Test.Common.Security;
 
@@ -7,7 +8,7 @@ public static class TestUsers
     // 1. Admin
     public static ApplicationUser Admin => new()
     {
-        Id = Guid.Parse("12345678-1234-1234-1234-000012345671"),
+        Id = Guid.Parse(SystemConstants.ManagerId),
         NameAr = "المدير العام",
         NameEn = "General Admin",
         Email = "test1@gmail.com",

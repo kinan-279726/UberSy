@@ -28,7 +28,7 @@ public sealed class CreateCategoryCommandHandler(
         {
             return ApplicationErrors.RestaurantNotFound;
         }
-        var isOwner = await _ownership.EnsureIsOwnerByRestaurantIdAsync(restaurant.OwnerId, cancellationToken);
+        var isOwner = await _ownership.EnsureIsOwnerByRestaurantIdAsync(restaurant.Id, cancellationToken);
         if (isOwner.IsError)
             return isOwner.Errors;
 

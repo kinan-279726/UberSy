@@ -17,7 +17,7 @@ public sealed class GetAddOnByIdQueryHandler(IApplicationDbContext context)
     {
         var addOn = await _context.TbAddOns.AsNoTracking().FirstOrDefaultAsync(a => a.Id == request.AddOnId, cancellationToken);
 
-        if (addOn is null) return ApplicationErrors.ItemNotFound;
+        if (addOn is null) return ApplicationErrors.AddOnNotFound;
 
         return addOn.ToDto();
     }

@@ -48,7 +48,7 @@ public sealed class RegisterDriverCommandHandler(
         }
 
         var driverResult = TbDriver.Create(
-            id: Guid.NewGuid(),
+            id: userId,
             userId: userId,
             vehicleType: request.VehicleType,
             serviceTier: ServiceTier.Standard,

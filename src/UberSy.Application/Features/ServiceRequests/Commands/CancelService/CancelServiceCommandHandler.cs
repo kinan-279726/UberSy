@@ -19,35 +19,37 @@ public sealed class CancelServiceCommandHandler(IApplicationDbContext context, I
 
     public async Task<Result<Updated>> Handle(CancelServiceCommand request, CancellationToken cancellationToken)
     {
-        var service = await _context.TbServiceRequests.FirstOrDefaultAsync(s => s.Id == request.ServiceId, cancellationToken);
+        if (string.IsNullOrWhiteSpace(_user.Id)) return ApplicationErrors.Unauthorized;
+
+        var service = await _context.TbServiceRequests
+            .FirstOrDefaultAsync(s => s.Id == request.ServiceId, cancellationToken);
 
         if (service is null) return ApplicationErrors.ServiceRequestNotFound;
 
-        if (string.IsNullOrWhiteSpace(_user.Id)) return ApplicationErrors.AccessDenied;
+        var isAdmin = _user.IsInRole(Roles.Admin);
 
-        if (Guid.Parse(_user.Id) != service.CustomerId)
+        if (!isAdmin)
         {
-            if (!_user.IsInRole(Roles.Admin))
-            {
+            if (!Guid.TryParse(_user.Id, out var userId) || userId != service.CustomerId)
                 return ApplicationErrors.AccessDenied;
-            }
+
+            if (service.Status is ServiceRequestStatus.Preparing or ServiceRequestStatus.OutForDelivery)
+                return ApplicationErrors.OrderAlreadyAccepted;
         }
 
-        if (service.Status != ServiceRequestStatus.Pending) return ApplicationErrors.OrderAlreadyAccepted;
-
-        var canclleResult = service.Cancel("");
-
-        if (canclleResult.IsError) return canclleResult.Errors;
+        var cancelResult = service.Cancel(request.Reason);
+        if (cancelResult.IsError) return cancelResult.Errors;
 
         _logger.LogInformation("service with id {id} cancelled by user {userId}", service.Id, _user.Id);
 
-
         await _context.SaveChangesAsync(cancellationToken);
 
-        var rest = await _context.TbFoodOrders.AsNoTracking().FirstOrDefaultAsync(o => o.Id == request.ServiceId, cancellationToken);
+        var foodOrder = await _context.TbFoodOrders
+            .AsNoTracking()
+            .FirstOrDefaultAsync(o => o.Id == request.ServiceId, cancellationToken);
 
-        if (rest is not null)
-            await _notifier.NotifyOrderCancledAsync(rest.RestaurantId, rest.Id);
+        if (foodOrder is not null)
+            await _notifier.NotifyOrderCancledAsync(foodOrder.RestaurantId, foodOrder.Id, cancellationToken);
 
         return Result.Updated;
     }

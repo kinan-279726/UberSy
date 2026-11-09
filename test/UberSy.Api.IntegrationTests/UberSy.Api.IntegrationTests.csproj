@@ -18,4 +18,8 @@
 		<ProjectReference Include="..\UberSy.Test.Common\UberSy.Test.Common.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Controllers\Admin\" />
+	</ItemGroup>
+
 </Project>

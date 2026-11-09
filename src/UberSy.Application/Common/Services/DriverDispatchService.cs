@@ -27,6 +27,7 @@ public sealed class DriverDispatchService(
     {
         var foodOrder = await _context.TbFoodOrders
             .Include(o => o.Restaurant)
+            .Include(o => o.IdNavigation)
             .FirstOrDefaultAsync(o => o.Id == serviceRequestId, cancellation);
 
         if (foodOrder is null)

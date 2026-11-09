@@ -19,7 +19,7 @@ public sealed class UpdateAddOnCommandHandler(IApplicationDbContext context ,IOw
 
         if (addOn is null)
         {
-            return ApplicationErrors.ItemNotFound;
+            return ApplicationErrors.AddOnNotFound;
         }
 
         var isOwner = await _ownership.EnsureIsOwnerByRestaurantIdAsync(addOn.RestaurantId, cancellationToken);

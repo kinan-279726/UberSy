@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using UberSy.Application.Common.Errors;
 using UberSy.Application.Common.Interfaces;
 using UberSy.Domain.Common.Results;
+using UberSy.Domain.ServiceRequests.Enums;
 
 namespace UberSy.Application.Features.ServiceRequests.Commands.RejectFoodOrder;
 
@@ -36,6 +37,10 @@ public sealed class RejectOrderCommandHandler(
         {
             return ownerResult.Errors;
         }
+        var resultManager =  _ownership.EnsureIsAManager(cancellationToken);
+        if (resultManager.IsError)
+        if (foodOrder.IdNavigation.Status is ServiceRequestStatus.Preparing or ServiceRequestStatus.OutForDelivery)
+            return ApplicationErrors.OrderAlreadyAccepted;
 
         var result = foodOrder.IdNavigation.Cancel(request.Reason);
 

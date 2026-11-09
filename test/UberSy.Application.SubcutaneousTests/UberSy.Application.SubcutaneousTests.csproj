@@ -19,4 +19,12 @@
 		<ProjectReference Include="..\UberSy.Test.Common\UberSy.Test.Common.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Features\Admin\BanUser\" />
+	  <Folder Include="Features\Admin\CancelOrder\" />
+	  <Folder Include="Features\Admin\UnbanUser\" />
+	  <Folder Include="Features\Admin\UnassignDriver\" />
+	  <Folder Include="Features\Restaurants\Menu\Printers\" />
+	</ItemGroup>
+
 </Project>

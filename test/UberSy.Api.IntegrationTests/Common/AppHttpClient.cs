@@ -17,13 +17,13 @@ public class AppHttpClient
 
     public async Task<string> GenerateTokenAsync(ApplicationUser user)
     {
-        var generateTokenQuery = new GenerateTokenQuery(user.Email!, user.Email!);
+        var generateTokenQuery = new GenerateTokenQuery(user.Email!, "Password123!");
 
-        var response = await _httpClient.PostAsJsonAsync("api/auth/login", generateTokenQuery);
+        var response = await _httpClient.PostAsJsonAsync("api/v1.0/auth/login", generateTokenQuery);
 
         if (!response.IsSuccessStatusCode)
         {
-            throw new InvalidOperationException($"Token generation failed with status code {response.StatusCode}");
+            throw new InvalidOperationException($"Token generation failed with status code {response.StatusCode} , Message:{await response.Content.ReadAsStringAsync()}");
         }
 
         var tokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>();
