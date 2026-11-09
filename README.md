@@ -77,18 +77,32 @@ Order status: `Pending` → `Preparing` → `OutForDelivery` → `Delivered`, an
 | Routing | OSRM for road distance, straight-line fallback when unavailable |
 | API | URL versioning, OpenAPI with Scalar, rate limiting on verification endpoints |
 | Observability | Serilog, OpenTelemetry |
-| Delivery | Docker and Docker Compose, central package management |
+| Delivery | Docker and Docker Compose, GitHub Actions CI/CD, image on GitHub Container Registry, central package management |
 
 ## Getting started
 
 Requirements: [Docker Desktop](https://www.docker.com/products/docker-desktop/).
 
+### Quick try (prebuilt image, no build needed)
+
+The API image is published to GitHub Container Registry on every release.
+
 ```bash
 git clone https://github.com/kinan-279726/UberSy.git
 cd UberSy
 cp .env.example .env        # Windows PowerShell: Copy-Item .env.example .env
+docker compose -f docker-compose.yml up
+```
+
+This pulls `ghcr.io/kinan-279726/ubersy` and starts it together with SQL Server. To use a specific release instead of `latest`, see the [available tags](https://github.com/kinan-279726/UberSy/pkgs/container/ubersy).
+
+### Build from source
+
+```bash
 docker compose up --build
 ```
+
+This uses `docker-compose.override.yml`, which builds the image locally from the `Dockerfile`.
 
 The first start takes a little while because the database is created and seeded (roles and an admin account).
 
@@ -140,7 +154,7 @@ Database design: [ERD](docs/images/erd.png)
 - Person and package delivery
 - Table reservation
 - Demo seed data and a ready-made request collection
-- Automated tests and a CI pipeline
+- More automated tests (integration tests)
 - EF Core migrations for production deployments
 
 ## Author

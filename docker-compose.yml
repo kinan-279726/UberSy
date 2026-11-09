@@ -21,10 +21,7 @@ services:
     restart: unless-stopped
 
   api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: ubersy-api:latest
+    image: ghcr.io/kinan-279726/ubersy:latest
     container_name: ubersy-api
     depends_on:
       db:
