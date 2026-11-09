@@ -1,6 +1,7 @@
 # UberSy
 
 ![CI](https://github.com/kinan-279726/UberSy/actions/workflows/ci.yml/badge.svg)
+![CD](https://github.com/kinan-279726/UberSy/actions/workflows/cd.yml/badge.svg)
 
 A multi-service delivery platform for Syria, built with ASP.NET Core and Clean Architecture.
 
